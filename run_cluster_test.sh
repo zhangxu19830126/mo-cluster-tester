@@ -86,8 +86,8 @@ function build_tester() {
     cd $SRC_DIR
     make cgo
     rm -rf $BASE_DIR/bin/*
-    CGO_CFLAGS="-I${SRC_DIR}/cgo" CGO_LDFLAGS="-L${SRC_DIR}/cgo -lmo" go test -c -o $BIN_DIR/service-tester -timeout 30m -race github.com/matrixorigin/matrixone/pkg/tests/service
-    CGO_CFLAGS="-I${SRC_DIR}/cgo" CGO_LDFLAGS="-L${SRC_DIR}/cgo -lmo" go test -c -o $BIN_DIR/txn-tester -timeout 30m -race github.com/matrixorigin/matrixone/pkg/tests/txn
+    CGO_CFLAGS="-I${SRC_DIR}/cgo" CGO_LDFLAGS="-L${SRC_DIR}/cgo -lmo" go test -c -o $BIN_DIR/service-tester -timeout $TEST_TIMEOUT -race github.com/matrixorigin/matrixone/pkg/tests/service
+    CGO_CFLAGS="-I${SRC_DIR}/cgo" CGO_LDFLAGS="-L${SRC_DIR}/cgo -lmo" go test -c -o $BIN_DIR/txn-tester -timeout $TEST_TIMEOUT -race github.com/matrixorigin/matrixone/pkg/tests/txn
     echo "build test completed"
 }
 
