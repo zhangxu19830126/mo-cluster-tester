@@ -126,8 +126,9 @@ do
     v=$?
     if [ $v == 1 ]
     then
-        tar zcvf $LOG_DIR/failed_$i.tgz $LOG_DIR/current_service.log $LOG_DIR/current_txn.log 
-        rm -rf $LOG_DIR/current_service.log $LOG_DIR/current_txn.log 
+        cd $LOG_DIR
+        tar zcvf ./failed_$i.tgz ./current_service.log ./current_txn.log 
+        rm -rf ./current_service.log ./current_txn.log 
         echo "test $i failed"
     fi
 done
