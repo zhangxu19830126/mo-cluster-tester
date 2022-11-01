@@ -1,0 +1,37 @@
+name: MatrixOne Integration Testing
+
+on:
+  schedule:
+    - cron: '30 13 * * *'
+  workflow_dispatch:
+  
+jobs:
+  daily-run-x86-linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '3'
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.19
+          
+      - name: Build MatrixOne
+        run: |
+          cd $GITHUB_WORKSPACE
+          sh run_cluster_test.sh -c 300 -t 60m
+      
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        continue-on-error: true
+        with:
+          name: daily_integrate_test_reports
+          path: |
+            ${{ github.workspace }}
+          retention-days: 7
+
+      
+      
+          
