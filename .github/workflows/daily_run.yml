@@ -24,10 +24,11 @@ jobs:
         with:
           go-version: 1.19
           
-      - name: Build MatrixOne
+      - name: Run Test
         run: |
           cd $GITHUB_WORKSPACE
-          sh run_cluster_test.sh -c ${{ github.event.inputs.round }} -t 60m
+          chmod a+x run_cluster_test.sh
+          ./run_cluster_test.sh -c ${{ github.event.inputs.round }} -t 60m
       
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
