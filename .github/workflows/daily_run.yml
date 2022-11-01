@@ -4,6 +4,12 @@ on:
   schedule:
     - cron: '30 13 * * *'
   workflow_dispatch:
+    inputs:
+      round:
+        description: 'TEST COUNT'
+        required: true
+        default: '300'
+
   
 jobs:
   daily-run-x86-linux:
@@ -21,7 +27,7 @@ jobs:
       - name: Build MatrixOne
         run: |
           cd $GITHUB_WORKSPACE
-          sh run_cluster_test.sh -c 300 -t 60m
+          sh run_cluster_test.sh -c ${{ github.event.inputs.round }} -t 60m
       
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
