@@ -130,5 +130,7 @@ do
         tar zcvf ./failed_$i.tgz ./current_service.log ./current_txn.log 
         rm -rf ./current_service.log ./current_txn.log 
         echo "test $i failed"
+    else
+        echo "test $i ok"
     fi
 done
