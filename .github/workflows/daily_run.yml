@@ -8,11 +8,16 @@ on:
       round:
         description: 'TEST COUNT'
         required: true
-        default: '300'
+        default: '10'
+      timeout:
+        description: 'Timeout for single run'
+        required: true
+        default: '5m'
 
   
 jobs:
-  daily-run-x86-linux:
+  manually-run-x86-linux:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -28,17 +33,46 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           chmod a+x run_cluster_test.sh
-          ./run_cluster_test.sh -c ${{ github.event.inputs.round }} -t 60m
+          ./run_cluster_test.sh -c ${{ github.event.inputs.round }} -t ${{ github.event.inputs.timeout }} 2>&1 | tee -a tester.log
+          if [ "$(cat tester.log |grep failed | grep -v "grep" | wc -l)" -gt 0 ]; then echo 'few tests have failed'; exit 1; else echo 'All tests passed'; fi
+                  
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() }}
+        continue-on-error: true
+        with:
+          name: manually_integrate_test_reports
+          path: |
+            ${{ github.workspace }}/workspace/log
+          retention-days: 7
+
       
+  daily-run-x86-linux:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: '3'
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.19
+          
+      - name: Run Test
+        run: |
+          cd $GITHUB_WORKSPACE
+          chmod a+x run_cluster_test.sh
+          ./run_cluster_test.sh -c 100 -t 5m 2>&1 | tee -a tester.log
+          if [ "$(cat tester.log |grep failed | grep -v "grep" | wc -l)" -gt 0 ]; then echo 'few tests have failed'; exit 1; else echo 'All tests passed'; fi
+                  
       - uses: actions/upload-artifact@v2
         if: ${{ always() }}
         continue-on-error: true
         with:
           name: daily_integrate_test_reports
           path: |
-            ${{ github.workspace }}
+            ${{ github.workspace }}/workspace/log
           retention-days: 7
-
-      
       
           
