@@ -44,6 +44,15 @@ jobs:
           path: |
             ${{ github.workspace }}/workspace/log
           retention-days: 7
+      - name: notice failure
+        if: ${{ failure() }}
+        uses: chf007/action-wechat-work@master
+        env:
+          WECHAT_WORK_BOT_WEBHOOK: ${{secrets.WECHAT_WORK_BOT_WEBHOOK}}
+        with:
+          msgtype: text
+          mentioned_list: '["@all"]'
+          content: "Failed---> manually-run-x86-linux:\n https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
 
       
   daily-run-x86-linux:
@@ -75,5 +84,14 @@ jobs:
           path: |
             ${{ github.workspace }}/workspace/log
           retention-days: 7
+      - name: notice failure
+        if: ${{ failure() }}
+        uses: chf007/action-wechat-work@master
+        env:
+          WECHAT_WORK_BOT_WEBHOOK: ${{secrets.WECHAT_WORK_BOT_WEBHOOK}}
+        with:
+          msgtype: text
+          mentioned_list: '["@all"]'
+          content: "Failed---> daily-run-x86-linux:\n https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       
           
