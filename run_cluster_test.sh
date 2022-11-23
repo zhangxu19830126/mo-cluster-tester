@@ -1,7 +1,7 @@
 #!/bin/bash
 
-MO_REPO=matrixorigin
-MO_BRANCH=main
+MO_REPO=zhangxu19830126
+MO_BRANCH=add_more_debug_info
 MO_SRC=
 TEST_COUNT=1
 TEST_TIMEOUT=30m
